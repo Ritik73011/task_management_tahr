@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  user_id   Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks Task[]
+
+  @@map("users")
+}
+
+model Project {
+  project_id  Int           @id @default(autoincrement())
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  tasks Task[]
+
+  @@map("projects")
+}
+
+model Task {
+  task_id      Int          @id @default(autoincrement())
+  title        String
+  description  String?
+  priority     TaskPriority @default(MEDIUM)
+  status       TaskStatus   @default(TODO)
+  due_date     DateTime
+
+  project_id   Int
+  user_id      Int
+
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  project Project @relation(fields: [project_id], references: [project_id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@index([project_id])
+  @@index([user_id])
+  @@index([status])
+  @@index([priority])
+  @@index([due_date])
+
+  @@map("tasks")
+}
