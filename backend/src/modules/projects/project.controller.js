@@ -3,7 +3,7 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 
 const createProject = asyncHandler(async (req, res) => {
-  const project = await projectService.createProject(req.body);
+  const project = await projectService.createProject(req.validatedData.body);
 
   return res
     .status(201)
@@ -11,7 +11,7 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getAllProjects = asyncHandler(async (req, res) => {
-  const projects = await projectService.getAllProjects();
+  const projects = await projectService.getAllProjects(req.validatedData.query);
 
   return res
     .status(200)
@@ -20,7 +20,7 @@ const getAllProjects = asyncHandler(async (req, res) => {
 
 const getProjectById = asyncHandler(async (req, res) => {
   const project = await projectService.getProjectById(
-    Number(req.params.projectId),
+    Number(req.validatedData.params.projectId),
   );
 
   return res
@@ -30,7 +30,7 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 const updateProject = asyncHandler(async (req, res) => {
   const project = await projectService.updateProject(
-    Number(req.params.projectId),
+    Number(req.validatedData.params.projectId),
     req.body,
   );
 
@@ -40,7 +40,9 @@ const updateProject = asyncHandler(async (req, res) => {
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
-  await projectService.deleteProject(Number(req.params.projectId));
+  await projectService.deleteProject(
+    Number(req.validatedData.params.projectId),
+  );
 
   return res
     .status(200)

@@ -53,3 +53,11 @@ export const projectIdSchema = z.object({
       .positive("Project ID must be a positive number."),
   }),
 });
+
+export const getProjectsSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().optional(),
+
+    limit: z.coerce.number().int().positive().optional(),
+  }),
+});

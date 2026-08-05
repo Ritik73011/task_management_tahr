@@ -3,7 +3,10 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  const task = await taskService.createTask(req.body, req.user.user_id);
+  const task = await taskService.createTask(
+    req.validatedData.body,
+    req.user.user_id,
+  );
 
   return res
     .status(201)
@@ -11,7 +14,7 @@ const createTask = asyncHandler(async (req, res) => {
 });
 
 const getAllTasks = asyncHandler(async (req, res) => {
-  const tasks = await taskService.getAllTasks(req.query);
+  const tasks = await taskService.getAllTasks(req.validatedData.query);
 
   return res
     .status(200)
@@ -19,7 +22,9 @@ const getAllTasks = asyncHandler(async (req, res) => {
 });
 
 const getTaskById = asyncHandler(async (req, res) => {
-  const task = await taskService.getTaskById(Number(req.params.taskId));
+  const task = await taskService.getTaskById(
+    Number(req.validatedData.params.taskId),
+  );
 
   return res
     .status(200)
@@ -28,7 +33,7 @@ const getTaskById = asyncHandler(async (req, res) => {
 
 const updateTask = asyncHandler(async (req, res) => {
   const task = await taskService.updateTask(
-    Number(req.params.taskId),
+    Number(req.validatedData.params.taskId),
     req.body,
   );
 
@@ -38,7 +43,7 @@ const updateTask = asyncHandler(async (req, res) => {
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
-  await taskService.deleteTask(Number(req.params.taskId));
+  await taskService.deleteTask(Number(req.validatedData.params.taskId));
 
   return res
     .status(200)

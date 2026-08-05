@@ -8,6 +8,7 @@ import {
   createProjectSchema,
   updateProjectSchema,
   projectIdSchema,
+  getProjectsSchema,
 } from "./project.validation.js";
 
 const router = Router();
@@ -20,7 +21,7 @@ router.post(
   projectController.createProject,
 );
 
-router.get("/", projectController.getAllProjects);
+router.get("/", validate(getProjectsSchema), projectController.getAllProjects);
 
 router.get(
   "/:projectId",

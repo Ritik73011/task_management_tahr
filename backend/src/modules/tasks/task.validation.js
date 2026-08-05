@@ -86,5 +86,8 @@ export const getTasksSchema = z.object({
     priority: z.enum(Object.values(TASK_PRIORITY)).optional(),
 
     sort: z.enum(Object.values(SORT_ORDER)).optional(),
+    page: z.coerce.number().int().positive().optional(),
+
+    limit: z.coerce.number().int().positive().optional(),
   }),
 });

@@ -1,5 +1,6 @@
 import prisma from "../../config/db.js";
 import ApiError from "../../utils/ApiError.js";
+import getPagination from "../../utils/pagination.js";
 
 const createTask = async (taskData, userId) => {
   const project = await prisma.project.findUnique({
@@ -22,33 +23,43 @@ const createTask = async (taskData, userId) => {
   return task;
 };
 
-const getAllTasks = async ({ status, priority, sort }) => {
+const getAllTasks = async ({ status, priority, sort, page, limit }) => {
   const where = {};
 
-  if (status) {
-    where.status = status;
-  }
+  if (status) where.status = status;
+  if (priority) where.priority = priority;
 
-  if (priority) {
-    where.priority = priority;
-  }
+  const { skip, take } = getPagination(page, limit);
 
-  const tasks = await prisma.task.findMany({
-    where,
-    orderBy: {
-      due_date: sort === "desc" ? "desc" : "asc",
-    },
-    include: {
-      project: {
-        select: {
-          project_id: true,
-          name: true,
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      skip,
+      take,
+      orderBy: {
+        due_date: sort === "desc" ? "desc" : "asc",
+      },
+      include: {
+        project: {
+          select: {
+            project_id: true,
+            name: true,
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.task.count({ where }),
+  ]);
 
-  return tasks;
+  return {
+    tasks,
+    pagination: {
+      total,
+      page: Number(page) || 1,
+      limit: take,
+      totalPages: Math.ceil(total / take),
+    },
+  };
 };
 
 const getTaskById = async (taskId) => {
