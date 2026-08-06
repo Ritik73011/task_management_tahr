@@ -32,10 +32,9 @@ const getTaskById = asyncHandler(async (req, res) => {
 });
 
 const updateTask = asyncHandler(async (req, res) => {
-  const task = await taskService.updateTask(
-    Number(req.validatedData.params.taskId),
-    req.body,
-  );
+  const { taskId } = req.validatedData.params;
+
+  const task = await taskService.updateTask(taskId, req.validatedData.body);
 
   return res
     .status(200)

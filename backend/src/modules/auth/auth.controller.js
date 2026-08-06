@@ -3,7 +3,7 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 
 const register = asyncHandler(async (req, res) => {
-  await authService.register(req.validatedData.body);
+  const result = await authService.register(req.validatedData.body);
 
   return res
     .status(201)
