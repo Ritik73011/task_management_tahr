@@ -1,6 +1,6 @@
 # Task Management API
 
-Backend API for the Task Management Application built as part of the TAHR Full Stack Developer Technical Assignment.
+Backend API for the Task Management Application
 
 ## Tech Stack
 
